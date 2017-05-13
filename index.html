@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head>
+<title>简单的搜索网页</title>
+
+<link rel="shortcut icon" href="favicon.ico" >
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+    *{margin:0;padding: 0;font-size: 16px;}
+    body{
+        background:url(./img/bgm.jpg);
+    }
+    #div1{
+        width:120px;
+        height:120px;
+        border-radius:60px;
+        background:gray;
+        position:absolute;
+    }
+
+/* 获取百度关键词css样式 */
+        body{font-size:14px;font-family:"微软雅黑"}
+        a{text-decoration:none;color:#000}
+        ul li{list-style:none}
+        input{width:262px;line-height:30px;border:1px solid #666;border-radius:3px;margin:100px auto 0;display:block;text-indent:1em}
+        ul{width:500px;margin:0px auto;cursor:pointer}
+        ul li a{display:block;text-indent:1em}
+
+
+</style>
+
+</head>
+    <body>
+
+<!-- 使用json获取百度关键词 -->
+
+    <!--通过img标签的src可以实现跨域-->
+<div class="box">
+    <input type="text" id="input" placeholder="百度一下，你就知道" />
+    <ul id="ul">
+         
+    </ul>
+</div>
+        
+    <!-- 获取百度关键词js代码部分 --> 
+    <script type="text/javascript">           
+            var ulDom = document.getElementById("ul");
+            var inputDom = document.getElementById("input");
+            inputDom.onkeyup=function(){
+                var value = this.value;
+                var valen=value.trim().length;
+                //百度关键字的接口
+                var url = "https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd="+value+"&cb=search";
+                var sptDom = document.createElement("script");
+                sptDom.src=url;
+                document.body.appendChild(sptDom);
+                document.body.removeChild(sptDom);
+            };
+            function search(json){
+                var str = json.s;
+                var ulHtml="";
+                 
+                for(var i=0,len=str.length;i<len;i++){
+                    //百度搜索的接口
+                    var url = "https://www.baidu.com/s?wd="+str[i]+"";
+                    ulHtml+="<li><a href='"+url+"' target='_blank'>"+str[i]+"</a></li>";
+                }
+                if(ulHtml==""){
+                    ulDom.style.border="";
+                }else{
+                    ulDom.style.border="1px solid #ccc";
+                }
+                ulDom.innerHTML = ulHtml;
+            };
+            //代理事件ul代理li的
+            ulDom.onmouseover=function(e){
+              var ev=e||window.event;
+              var target = ev.target||ev.srcElement;
+              target.style.background="#eee";
+            };
+            ulDom.onmouseout=function(e){
+              var ev=e||window.event;
+              var target = ev.target||ev.srcElement;
+              target.style.background="";
+            };
+    </script> 
+
+
+    <!--网址导航框内容区域-->
+    <div id="div1"></div>
+
+    <!-- 设置背景随机游动小线条 -->
+<script src="./js/canvas-nest.js" type="text/javascript"></script>
+
+
+<!-- 鼠标移动跟随程序 -->
+<script>
+window.onload=function ()
+{
+    var oDiv=document.getElementById('div1');
+    
+    var disX=0;
+    var disY=0;
+    
+    oDiv.onmousedown=function (ev)
+    {
+        var oEvent=ev||event;
+        
+        disX=oEvent.clientX-oDiv.offsetLeft;
+        disY=oEvent.clientY-oDiv.offsetTop;
+        
+        document.onmousemove=function (ev)
+        {
+            var oEvent=ev||event;
+            var l=oEvent.clientX-disX;
+            var t=oEvent.clientY-disY;
+            
+            if(l<0)
+            {
+                l=0;
+            }
+            else if(l>document.documentElement.clientWidth-oDiv.offsetWidth)
+            {
+                l=document.documentElement.clientWidth-oDiv.offsetWidth;
+            }
+            
+            if(t<0)
+            {
+                t=0;
+            }
+            else if(t>document.documentElement.clientHeight-oDiv.offsetHeight)
+            {
+                t=document.documentElement.clientHeight-oDiv.offsetHeight;
+            }
+            
+            oDiv.style.left=l+'px';
+            oDiv.style.top=t+'px';
+        };
+        
+        document.onmouseup=function ()
+        {
+            document.onmousemove=null;
+            document.onmouseup=null;
+        };
+        
+        return false;
+    };
+};
+</script>
+    </body>
+
+
+
+</html>
